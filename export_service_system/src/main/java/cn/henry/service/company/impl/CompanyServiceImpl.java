@@ -23,6 +23,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
     //分页查询
     public PageInfo findByPageHelper(int page, int size) {
+        System.out.println("测试");
         //1、调用PageHelper.startPage方法
         PageHelper.startPage(page, size);
         //2、紧跟着第一个查询会被分页
