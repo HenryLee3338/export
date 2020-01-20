@@ -25,6 +25,7 @@ public class CompanyServiceImpl implements CompanyService {
     public PageInfo findByPageHelper(int page, int size) {
         System.out.println("测试推送");
         System.out.println("测试拉取");
+        System.out.println("测试推送2");
         //1、调用PageHelper.startPage方法
         PageHelper.startPage(page, size);
         //2、紧跟着第一个查询会被分页
