@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.henry.dao.stat.StatDao" >
+    <!--生产厂家销情况-->
+    <select id="getFactoryData" resultType="map">
+      select factory_name as name,sum(amount) as value from `co_contract_product`
+	  where company_id = #{companyId}
+	  group by factory_name
+    </select>
+    <!--产品销售排行-->
+    <select id="getSellData" resultType="map">
+      SELECT product_no AS name,SUM(amount) AS value FROM `co_contract_product`
+	  WHERE company_id = #{companyId}
+	  GROUP BY product_no ORDER BY SUM(amount) DESC LIMIT 10
+    </select>
+
+<!--SELECT product_no AS name, SUM(amount) AS value
+FROM co_contract_product
+WHERE company_id = #{companyId}
+GROUP BY product_no
+ORDER BY SUM(amount) DESC LIMIT 10-->
+
+    <!--系统访问压力-->
+    <select id="getOnlineData" resultType="map">
+      select o.A1 as name,ifnull(z.value,0) as value from `st_online_info` as o left join (
+          select date_format(time,'%H') as name,count(*) as value from  `st_sys_log`
+	      where company_id = #{companyId}
+	      group by DATE_FORMAT(TIME,'%H')) as z
+	      on o.A1 = z.name
+    </select>
+
+    <!--销售单价排行-->
+    <select id="getPriceData" parameterType="string" resultType="map">
+        SELECT SUM(price)   value ,loading_rate  name  FROM co_contract_product
+        WHERE company_id= #{companyId}
+        GROUP BY loading_rate ORDER BY SUM(price) DESC LIMIT 10
+    </select>
+
+    <!--统计登录ip前十-->
+    <select id="getlojinipData" parameterType="string" resultType="map">
+        SELECT COUNT(ip) value,user_name name FROM st_sys_log
+        WHERE company_id= #{companyId}
+        GROUP BY user_name DESC ORDER BY VALUE  LIMIT 10
+    </select>
+</mapper>

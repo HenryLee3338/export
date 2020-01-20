@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.henry.dao.system.DeptDao" >
+
+    <resultMap id="baseResultMap" type="cn.henry.domain.system.Dept">
+        <id column="dept_id" property="id"></id>
+
+        <result column="dept_name" property="deptName"></result>
+        <!--<result column="parent_id" property="parent_id"></result>-->
+        <result column="state" property="state"></result>
+        <result column="company_id" property="companyId"></result>
+        <result column="company_name" property="companyName"></result>
+
+        <!--处理一对一映射，父部门与子部门之间的关联-->
+        <association
+                column="parent_id"
+                property="parent"
+                javaType="cn.henry.domain.system.Dept"
+                select="findById"
+        ></association>
+    </resultMap>
+
+
+    <select id="findAll" parameterType="string" resultMap="baseResultMap">
+        SELECT * FROM pe_dept WHERE company_id = #{companyId}
+    </select>
+
+    <select id="findById" parameterType="string" resultMap="baseResultMap">
+        SELECT * FROM pe_dept WHERE dept_id = #{id}
+    </select>
+
+    <insert id="save" parameterType="cn.henry.domain.system.Dept">
+        INSERT INTO pe_dept (
+            dept_id,dept_name,parent_id,state,company_id,company_name
+        )
+        VALUES (
+            #{id},#{deptName},#{parent.id},#{state},#{companyId},#{companyName}
+        )
+    </insert>
+
+    <update id="update" parameterType="cn.henry.domain.system.Dept">
+        UPDATE pe_dept SET
+            dept_name=#{deptName},parent_id=#{parent.id},state=#{state},company_id=#{companyId},company_name=#{companyName}
+        WHERE dept_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="string">
+        DELETE FROM pe_dept WHERE dept_id = #{id}
+    </delete>
+
+
+</mapper>
